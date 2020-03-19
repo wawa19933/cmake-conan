@@ -9,6 +9,8 @@ project(conan_wrapper CXX)
 
 # include(${CMAKE_BINARY_DIR}/conan.cmake)
 include(conan.cmake)
+conan_add_remote(NAME test INDEX 0 URL http://georgia.fila-network.de:8081/artifactory/api/conan/conan-local)
+conan_add_remote(NAME testf INDEX 2 URL http://georgia.fila-network.de:8081/artifactory/api/conan/conan-local NOFORCE)
 conan_cmake_run(REQUIRES Hello/0.1@memsharded/testing
                 BASIC_SETUP CMAKE_TARGETS
                 BUILD missing)

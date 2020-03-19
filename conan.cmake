@@ -550,12 +550,13 @@ endmacro()
 
 function(conan_add_remote)
     # Adds a remote
-    # Arguments URL and NAME are required, INDEX and COMMAND are optional
+    # Arguments URL and NAME are required, INDEX, NOFORCE and COMMAND are optional
     # Example usage:
-    #    conan_add_remote(NAME bincrafters INDEX 1
+    #    conan_add_remote(NAME bincrafters INDEX 1 NOFORCE
     #       URL https://api.bintray.com/conan/bincrafters/public-conan)
+    set(flags NOFORCE)
     set(oneValueArgs URL NAME INDEX COMMAND)
-    cmake_parse_arguments(CONAN "" "${oneValueArgs}" "" ${ARGN})
+    cmake_parse_arguments(CONAN "${flags}" "${oneValueArgs}" "" ${ARGN})
 
     if(DEFINED CONAN_INDEX)
         set(CONAN_INDEX_ARG "-i ${CONAN_INDEX}")
@@ -565,9 +566,13 @@ function(conan_add_remote)
     else()
         conan_check(REQUIRED)
     endif()
+    set(CONAN_FORCE_FLAG -f)
+    if(CONAN_NOFORCE)
+        unset(CONAN_FORCE_FLAG)
+    endif()
     message(STATUS "Conan: Adding ${CONAN_NAME} remote repository (${CONAN_URL})")
     execute_process(COMMAND ${CONAN_CMD} remote add ${CONAN_NAME} ${CONAN_URL}
-      ${CONAN_INDEX_ARG} -f)
+      ${CONAN_INDEX_ARG} ${CONAN_FORCE_FLAG})
 endfunction()
 
 macro(conan_config_install)
